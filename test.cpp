@@ -4,7 +4,7 @@
 
 #include "gtest/gtest.h"
 #include "BayesNode.h"
-
+#include "Parser.h"
 
 TEST(NodeTests, NodeIndexTest) {
     // Alarm node in Alarm network example.
@@ -65,10 +65,22 @@ TEST(NodeTests, NodeQueryTests) {
     // Given -burgular, +earthquake probability of +alarm is 0.29
     // Will assume it is at this value with some threshold.
 
-    EXPECT_GT(positiveCount, 0.25);
-    EXPECT_LT(positiveCount, 0.35);
+    EXPECT_GT(probResult, 0.25);
+    EXPECT_LT(probResult, 0.35);
 }
 
+    static std::pair<int, std::vector<int> > parseQuery(std::string query, std::vector<std::string> names);
+
+
+TEST(NodeTests, ParseQueryTest) {
+    std::vector<std::string> names = {"Burglar", "Earthquake", "Alarm", "John", "Mary"};
+    std::string query ="P(Burglar | John=true, Mary=true)";
+
+    auto result = Parser::parseQuery(query, names);
+
+    EXPECT_EQ(result.first, 0);
+    EXPECT_EQ(result.second, std::vector<int>({0, 0, 0, 1, 1}));
+}
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

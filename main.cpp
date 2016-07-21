@@ -3,9 +3,8 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
-#include <utility>
-#include <regex>
-#include <algorithm>
+// #include <utility>
+// #include <algorithm>
 
 using namespace std;
 
@@ -20,28 +19,7 @@ std::ostream& operator<< (std::ostream& out, const std::vector<T>& v) {
   return out;
 }
 
-std::pair<int, std::vector<int> > parseQuery(std::string query, std::vector<std::string> names) {
-    std::regex rgx("(?:P\\()?(?:(\\w+)(?:\\s*\\=?\\s*)?(\\w+)?)+", std::regex::ECMAScript);
-    std::smatch result;
 
-    std::vector<int> observations(names.size(), 0); // Initialise default observations with values of zero
-    int queryIndex;
-
-    std::regex_search(query, result, rgx);
-    // The regex returns the entire match and then the group afterwards.
-    queryIndex = find(names.begin(), names.end(), result[1]) - names.begin();
-    query = result.suffix().str();
-
-    while (std::regex_search (query,result,rgx)) {
-        int index = find(names.begin(), names.end(), result[1]) - names.begin();
-        string boolStr = result[2];
-        std::transform(boolStr.begin(), boolStr.end(), boolStr.begin(), ::tolower);
-        observations[index] = boolStr == "true" ? 1 : -1;
-        query = result.suffix().str();
-    }
-
-    return std::make_pair(queryIndex, observations);
-}
 
 int main(int argc, char const *argv[]) {
     srand(time(NULL));  // Seed the RNG with current time.
