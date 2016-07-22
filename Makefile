@@ -15,7 +15,7 @@ LINK = $(notdir $(subst .cpp,.o, $(FILES)))
 
 all : $(EXE)
 
-$(EXE) : $(LINK)
+$(EXE) : main.cpp $(LINK)
 	g++ main.cpp $(DEFS) -o $(EXE) $(LINK)
 
 %.o : %.cpp %.h

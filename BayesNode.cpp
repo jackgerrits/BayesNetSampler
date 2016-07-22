@@ -1,16 +1,17 @@
 #include "BayesNode.h"
 
+#include <iostream>
+
 double randDouble(){
-    return ((double) rand() / (RAND_MAX)) + 1;
+    return ((double) rand() / (RAND_MAX));
 }
 
-
-BayesNode::BayesNode(std::vector<double> probabilities, std::vector<bool> parents, int selfIndex)
+BayesNode::BayesNode(std::vector<double> probabilities, std::vector<bool> parents, int selfIndex, std::string name)
     : probabilities(probabilities)
     , parents(parents)
     , selfIndex(selfIndex)
+    , name(name)
 { }
-
 
 std::pair<std::vector<int>, double> BayesNode::query(std::pair<std::vector<int>, double> observations){
     // If the index of this node already has evidence it means that it was given as evidence

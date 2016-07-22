@@ -3,76 +3,62 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
-// #include <utility>
-// #include <algorithm>
+#include <cmath>
+#include <fstream>
+#include <functional>
+
+#include "BayesNode.h"
+#include "Parser.h"
 
 using namespace std;
 
-// Vector pipe overload to allow for easy printing and debugging
-template <typename T>
+template<typename T>
 std::ostream& operator<< (std::ostream& out, const std::vector<T>& v) {
-  if ( !v.empty() ) {
-    out << '[';
-    std::copy (v.begin(), v.end(), std::ostream_iterator<T>(out, ", "));
-    out << "\b\b]";
-  }
-  return out;
+    out << "{";
+    for(int i = 0; i < v.size(); i++) {
+        out << v[i];
+        if(i != (v.size()-1)) {
+            out << ", ";
+        }
+    }
+    out << "}";
+    return out;
 }
 
-
+template <typename T, typename F>
+std::vector<T> mapTransform(std::vector<F> container, const std::function <T (F)>& func) {
+    std::vector<T> vec;
+    for(auto element : container) {
+        vec.push_back(func(element));
+    }
+    return vec;
+}
 
 int main(int argc, char const *argv[]) {
+    if(argc != 2){
+        cerr << "USAGE: " << argv[0] << " networkDefinitonFile " << endl;
+        exit(1);
+    }
+
+    ifstream file(argv[1]);
+    if (!file.is_open()){
+        cerr << "Failed opening network file" << endl;
+        exit(1);
+    }
+
     srand(time(NULL));  // Seed the RNG with current time.
 
-    int numNodes;
-    cin >> numNodes;
-
-    cin.ignore(1000,'\n');
-
-    std::vector<string> names;
-    for(int i = 0; i < numNodes; i++){
-        string currentName;
-        cin >> currentName;
-        names.push_back(currentName);
+    // Process the network file
+    vector<BayesNode> nodes = Parser::parseNetworkFile(file);
+    for(auto n : nodes){
+        cout << n.name << endl;
     }
 
-    cin.ignore(1000,'\n');
-
-    std::vector<string> parents;
-    for(int i = 0; i < numNodes; i++){
-        string currentName;
-        getline(cin, currentName);
-        parents.push_back(currentName);
-    }
-
-    cout << parents << endl;
-
+    // Read in a line and process it as the query.
+    string queryLine;
+    getline(cin, queryLine);
+    pair<int, vector<int>> query = Parser::parseQuery(queryLine,
+        mapTransform<string, BayesNode>(nodes, [] (BayesNode node) { return node.name; }));
 
     return 0;
 }
-
-
-// (?:P\()?(?:(\w+)(?:\=?)?(\w+)?)+
-
-// 5
-// Burglar Earthquake Alarm John Mary
-// 00100
-// 00100
-// 00011
-// 00000
-// 00000
-
-// 0.01 0.99
-
-// 0.02 0.98
-
-// 0.005 0.995
-// 0.29 0.71
-// 0.94 0.06
-// 0.95 0.05
-
-// 0.05 0.95
-// 0.9 0.1
-
-// 0.01 0.99
-// 0.7 0.3
