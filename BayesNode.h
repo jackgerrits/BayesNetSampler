@@ -7,11 +7,11 @@
 #include <cassert>
 #include <cstdlib>
 
-double randDouble();
+#include "util.h"
 
 class BayesNode {
 public:
-    std::vector<double> probabilities;    // Probability table stores the values for true, false can be calculated.
+    std::vector<double> probabilities;    // Probability table stores the values for true, false can be calculated as (1-p).
     std::vector<bool> parents;
     int selfIndex;
     std::string name;

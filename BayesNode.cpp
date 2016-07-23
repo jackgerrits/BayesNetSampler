@@ -1,11 +1,5 @@
 #include "BayesNode.h"
 
-#include <iostream>
-
-double randDouble(){
-    return ((double) rand() / (RAND_MAX));
-}
-
 BayesNode::BayesNode(std::vector<double> probabilities, std::vector<bool> parents, int selfIndex, std::string name)
     : probabilities(probabilities)
     , parents(parents)
