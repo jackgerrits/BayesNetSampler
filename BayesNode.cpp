@@ -7,25 +7,36 @@ BayesNode::BayesNode(std::vector<double> probabilities, std::vector<bool> parent
     , name(name)
 { }
 
-std::pair<std::vector<int>, double> BayesNode::query(std::pair<std::vector<int>, double> observations){
+std::pair<std::vector<int>, double> BayesNode::queryWithWeight(std::pair<std::vector<int>, double> evidence){
     // If the index of this node already has evidence it means that it was given as evidence
     // No need to sample, but must mutate weight.
-    bool isSelfEvidence = observations.first[selfIndex] != 0;
-
-    double selfProb = getProbability(observations.first);
+    bool isSelfEvidence = evidence.first[selfIndex] != 0;
 
     if(isSelfEvidence){
-        observations.second = observations.second * getProbability(observations.first);
+        evidence.second = evidence.second * getProbability(evidence.first);
     } else {
-        double queryValue = randDouble();
-        if(queryValue <= selfProb){ // Case is positive
-            observations.first[selfIndex] = 1;
-        } else { // Case is negative
-            observations.first[selfIndex] = -1;
-        }
+        evidence.first = query(evidence.first);
     }
 
-    return observations;
+    return evidence;
+}
+
+std::vector<int> BayesNode::query(std::vector<int> evidence){
+    // If this sample already contains a value for this node, just send it back.
+    if(evidence[selfIndex] != 0){
+        return evidence;
+    }
+
+    double selfProb = getProbability(evidence);
+    double queryValue = randDouble();
+
+    if(queryValue <= selfProb){ // Case is positive
+        evidence[selfIndex] = 1;
+    } else { // Case is negative
+        evidence[selfIndex] = -1;
+    }
+
+    return evidence;
 }
 
 // Returns the probability of positive self case when self has no observation.
@@ -43,8 +54,6 @@ double BayesNode::getProbability(std::vector<int> evidence){
 
     return prob;
 }
-
-
 
 int BayesNode::getIndex(std::vector<int> evidence){
     assert(evidence.size() == parents.size());
@@ -64,4 +73,3 @@ int BayesNode::getIndex(std::vector<int> evidence){
 
     return index;
 }
-

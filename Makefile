@@ -2,8 +2,7 @@ PLATFORM := $(shell uname)
 
 EXE=sampler$(EXT)
 
-# DEFS =-std=c++11 -Wall -Wextra
-DEFS =-std=c++11 -Wall
+DEFS =-std=c++11 -Wall -Wextra
 
 FILES += $(wildcard *.cpp)
 FILES := $(filter-out test.cpp, $(FILES))

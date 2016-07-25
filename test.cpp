@@ -12,7 +12,7 @@ TEST(NodeTests, NodeIndexTest) {
     std::vector<bool> parents = {true, true, false, false, false};
     int selfIndex = 2;
 
-    BayesNode bayesNode(probabilities, parents, selfIndex);
+    BayesNode bayesNode(probabilities, parents, selfIndex, "testNode");
 
     EXPECT_EQ(bayesNode.getIndex({-1, -1, 0, 0, 0}), 0);
     EXPECT_EQ(bayesNode.getIndex({-1, 1, 0, 0, 0}), 1);
@@ -26,7 +26,7 @@ TEST(NodeTests, NodeWeightTests) {
     std::vector<bool> parents = {true, true, false, false, false};
     int selfIndex = 2;
 
-    BayesNode bayesNode(probabilities, parents, selfIndex);
+    BayesNode bayesNode(probabilities, parents, selfIndex, "testNode");
 
     EXPECT_NEAR(bayesNode.getProbability({-1, -1, 1, 0, 0}), 0.005, 0.00001);
     EXPECT_NEAR(bayesNode.getProbability({-1, 1, 1, 0, 0}), 0.29, 0.00001);
@@ -47,7 +47,7 @@ TEST(NodeTests, NodeQueryPositiveTests) {
     std::vector<bool> parents = {true, true, false, false, false};
     int selfIndex = 2;
 
-    BayesNode bayesNode(probabilities, parents, selfIndex);
+    BayesNode bayesNode(probabilities, parents, selfIndex, "testNode");
 
     std::vector<int> observations = {-1, 1, 0, 0, 0};
     auto initialObservations = std::make_pair(observations, 1.0);
@@ -55,7 +55,7 @@ TEST(NodeTests, NodeQueryPositiveTests) {
     int positiveCount = 0;
     const int TOTAL_RUNS = 1000;
     for(int i = 0; i < TOTAL_RUNS; ++i){
-        auto result = bayesNode.query(initialObservations);
+        auto result = bayesNode.queryWithWeight(initialObservations);
         positiveCount += result.first[selfIndex] == 1 ? 1 : 0;
     }
 
@@ -77,7 +77,7 @@ TEST(NodeTests, NodeQueryNegativeTests) {
     std::vector<bool> parents = {true, true, false, false, false};
     int selfIndex = 2;
 
-    BayesNode bayesNode(probabilities, parents, selfIndex);
+    BayesNode bayesNode(probabilities, parents, selfIndex, "testNode");
 
     std::vector<int> observations = {-1, -1, 0, 0, 0};
     auto initialObservations = std::make_pair(observations, 1.0);
@@ -85,7 +85,7 @@ TEST(NodeTests, NodeQueryNegativeTests) {
     int negativeCount = 0;
     const int TOTAL_RUNS = 1000;
     for(int i = 0; i < TOTAL_RUNS; ++i){
-        auto result = bayesNode.query(initialObservations);
+        auto result = bayesNode.queryWithWeight(initialObservations);
         negativeCount += result.first[selfIndex] == -1 ? 1 : 0;
     }
 
@@ -98,7 +98,6 @@ TEST(NodeTests, NodeQueryNegativeTests) {
     EXPECT_GT(probResult, 0.9);
     EXPECT_LT(probResult, 1.0);
 }
-
 
 TEST(NodeTests, ParseQueryTest) {
     std::vector<std::string> names = {"Burglar", "Earthquake", "Alarm", "John", "Mary"};

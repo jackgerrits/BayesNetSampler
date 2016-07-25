@@ -1,6 +1,5 @@
 #include "Parser.h"
 
-
 std::vector<BayesNode> Parser::parseNetworkFile(std::ifstream& file){
     int numNodes;
     file >> numNodes;

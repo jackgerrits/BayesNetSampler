@@ -19,7 +19,8 @@ public:
 public:
     BayesNode(std::vector<double> probabilities, std::vector<bool> parents, int selfIndex, std::string name);
 
-    std::pair<std::vector<int>, double> query(std::pair<std::vector<int>, double> evidence);
+    std::pair<std::vector<int>, double> queryWithWeight(std::pair<std::vector<int>, double> evidence);
+    std::vector<int> query(std::vector<int> evidence);
     int getIndex(std::vector<int> evidence);
     double getProbability(std::vector<int> evidence);
 };
