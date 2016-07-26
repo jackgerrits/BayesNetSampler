@@ -1,6 +1,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 
 #include "gtest/gtest.h"
 #include "BayesNode.h"
@@ -107,6 +108,54 @@ TEST(NodeTests, ParseQueryTest) {
 
     EXPECT_EQ(result.first, 0);
     EXPECT_EQ(result.second, std::vector<int>({0, 0, 0, 1, 1}));
+}
+
+TEST(NodeTests, BurgularNetworkLikelihoodTest) {
+    srand(time(NULL));
+
+    std::ifstream file("burglarnetwork.txt");
+    ASSERT_TRUE(file.is_open());
+
+    std::vector<BayesNode> nodes = Parser::parseNetworkFile(file);
+
+    std::string queryLine = "P(Burglar | John=true, Mary=true)";
+    std::pair<int, std::vector<int>> query = Parser::parseQuery(queryLine,
+        vectorMap<std::string, BayesNode>(nodes, [] (BayesNode node) { return node.name; }));
+
+    const int NUM_SAMPLES = 100000;
+    std::pair<double, double> result = likelihoodSampling(query, nodes, NUM_SAMPLES);
+
+    // Actaul value is 0.452634
+    EXPECT_GT(result.first, 0.40);
+    EXPECT_LT(result.first, 0.50);
+
+    // Actaul value is  0.547366
+    EXPECT_GT(result.second, 0.50);
+    EXPECT_LT(result.second, 0.60);
+}
+
+TEST(NodeTests, BurgularNetworkRejectionTest) {
+    srand(time(NULL));
+
+    std::ifstream file("burglarnetwork.txt");
+    ASSERT_TRUE(file.is_open());
+
+    std::vector<BayesNode> nodes = Parser::parseNetworkFile(file);
+
+    std::string queryLine = "P(Burglar | John=true, Mary=true)";
+    std::pair<int, std::vector<int>> query = Parser::parseQuery(queryLine,
+        vectorMap<std::string, BayesNode>(nodes, [] (BayesNode node) { return node.name; }));
+
+    const int NUM_SAMPLES = 100000;
+    std::pair<double, double> result = rejectionSampling(query, nodes, NUM_SAMPLES);
+
+    // Actaul value is 0.452634
+    EXPECT_GT(result.first, 0.40);
+    EXPECT_LT(result.first, 0.50);
+
+    // Actaul value is  0.547366
+    EXPECT_GT(result.second, 0.50);
+    EXPECT_LT(result.second, 0.60);
 }
 
 int main(int argc, char **argv) {
