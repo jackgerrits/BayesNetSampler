@@ -22,9 +22,9 @@ Note that several tests are non-deterministic given the nature of this assignmen
 ./sampler [-r] networkDefinitionFile
 ```
 
-`-r` - use rejection sampling. Omitting `-r` uses the default likelihood sampling method.
+- `-r` - use rejection sampling. Omitting `-r` uses the default likelihood sampling method.
 
-`networkDefinitonFile` - path to a file containing a network definition. An example definition can be seen in `burglarnetwork.txt`
+- `networkDefinitonFile` - path to a file containing a network definition. An example definition can be seen in `burglarnetwork.txt`
 
 The program then accepts a query from `stdin` and prints the probability distribution of the query variable to `stdout`. An example query is:
 
