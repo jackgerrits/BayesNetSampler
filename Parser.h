@@ -5,9 +5,13 @@
 #include <utility>
 #include <regex>
 #include <string>
+#include <cassert>
 #include <fstream>
 
+#include <iostream>
+
 #include "BayesNode.h"
+#include "util.h"
 
 class Parser {
 public:

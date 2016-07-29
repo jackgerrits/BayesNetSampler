@@ -1,5 +1,14 @@
 #include "Parser.h"
 
+template <typename T>
+int findIndex(std::vector<T> container, T searchElem){
+    auto findIterator = find(container.begin(), container.end(), searchElem);
+    if(findIterator == container.end()){
+        return -1;
+    }
+    return findIterator - container.begin();
+}
+
 std::vector<BayesNode> Parser::parseNetworkFile(std::ifstream& file){
     int numNodes;
     file >> numNodes;
@@ -62,18 +71,20 @@ std::pair<int, std::vector<int> > Parser::parseQuery(std::string query, std::vec
 
     // Initialise default observations with values of zero
     std::vector<int> observations(names.size(), 0);
-    int queryIndex;
 
     // Initial regex_search for the query variable.
     std::regex_search(query, result, rgx);
     // The regex returns the entire match and then the group afterwards, so the first element is ignored.
-    queryIndex = find(names.begin(), names.end(), result[1]) - names.begin();
+    int queryIndex = findIndex(names, std::string(result[1]));
+    assert(queryIndex != -1);   // Name was not found in the network.
+
     query = result.suffix().str();
 
     // Iterate over each of the successive evidence pair matches adding them onto the observation vector.
     while (std::regex_search (query,result,rgx)) {
         // Determines the index of the given random variable name in the node list
-        int index = find(names.begin(), names.end(), result[1]) - names.begin();
+        int index = findIndex(names, std::string(result[1]));
+        assert(index != -1);    // Name was not found in the network.
         // Extract the boolean from the subgroup, transform to lower case just in case and then convert into a negative or positive observation.
         std::string boolStr = result[2];
         std::transform(boolStr.begin(), boolStr.end(), boolStr.begin(), ::tolower);
