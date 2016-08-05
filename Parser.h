@@ -7,7 +7,6 @@
 #include <string>
 #include <cassert>
 #include <fstream>
-
 #include <iostream>
 
 #include "BayesNode.h"

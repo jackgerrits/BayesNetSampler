@@ -56,6 +56,7 @@ int main(int argc, char const *argv[]) {
     pair<int, vector<int>> query = Parser::parseQuery(queryLine,
         vectorMap<string, BayesNode>(nodes, [] (BayesNode node) { return node.name; }));
 
+    // Apply the sampling method that was selected.
     const int NUM_SAMPLES = 1000;
     pair<double, double> result;
     if(useRejection){

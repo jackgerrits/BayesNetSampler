@@ -1,5 +1,7 @@
 #include "Parser.h"
 
+// Searches for the given element in the given container.
+// Returns the index of the element or -1 if not found.
 template <typename T>
 int findIndex(std::vector<T> container, T searchElem){
     auto findIterator = find(container.begin(), container.end(), searchElem);
@@ -76,7 +78,10 @@ std::pair<int, std::vector<int> > Parser::parseQuery(std::string query, std::vec
     std::regex_search(query, result, rgx);
     // The regex returns the entire match and then the group afterwards, so the first element is ignored.
     int queryIndex = findIndex(names, std::string(result[1]));
-    assert(queryIndex != -1);   // Name was not found in the network.
+    if(queryIndex == -1){
+        std::cerr << result[1] << " was not found in the network defintion. Check spelling or capitalisation." << std::endl;
+        exit(1);
+    }
 
     query = result.suffix().str();
 
@@ -84,7 +89,10 @@ std::pair<int, std::vector<int> > Parser::parseQuery(std::string query, std::vec
     while (std::regex_search (query,result,rgx)) {
         // Determines the index of the given random variable name in the node list
         int index = findIndex(names, std::string(result[1]));
-        assert(index != -1);    // Name was not found in the network.
+        if(index == -1){
+            std::cerr << result[1] << " was not found in the network defintion. Check spelling or capitalisation." << std::endl;
+            exit(1);
+        }
         // Extract the boolean from the subgroup, transform to lower case just in case and then convert into a negative or positive observation.
         std::string boolStr = result[2];
         std::transform(boolStr.begin(), boolStr.end(), boolStr.begin(), ::tolower);
