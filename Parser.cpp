@@ -88,7 +88,8 @@ std::pair<int, std::vector<int> > Parser::parseQuery(std::string query, std::vec
     std::transform(queryName.begin(), queryName.end(), queryName.begin(), ::tolower);
     int queryIndex = findIndex(names, queryName);
     if(queryIndex == -1){
-        std::cerr << queryName << " was not found in the network defintion, perhaps check spelling." << std::endl;
+        std::cerr << queryName
+            << " was not found in the network defintion, perhaps check spelling." << std::endl;
         exit(1);
     }
 
@@ -101,7 +102,8 @@ std::pair<int, std::vector<int> > Parser::parseQuery(std::string query, std::vec
         std::transform(currentName.begin(), currentName.end(), currentName.begin(), ::tolower);
         int index = findIndex(names, currentName);
         if(index == -1){
-            std::cerr << currentName << " was not found in the network defintion, perhaps check spelling." << std::endl;
+            std::cerr << currentName
+                << " was not found in the network defintion, perhaps check spelling." << std::endl;
             exit(1);
         }
         query = result.suffix().str();

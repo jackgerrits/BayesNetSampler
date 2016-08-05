@@ -103,7 +103,8 @@ std::pair<double, double> likelihoodSampling(std::pair<int, std::vector<int>> qu
         negativeWeight / (positiveWeight + negativeWeight));
 }
 
-// Implements the rejection sampling algorithm, accepts a query (queryIndex, initialObservations), the network and the number of samples to take
+// Implements the rejection sampling algorithm,
+// accepts a query (queryIndex, initialObservations), the network and the number of samples to take
 std::pair<double, double> rejectionSampling(std::pair<int, std::vector<int>> query, std::vector<BayesNode> network, int numSamples) {
     int positiveCount = 0;
     int negativeCount = 0;

@@ -15,7 +15,8 @@
 class Parser {
 public:
     static std::vector<BayesNode> parseNetworkFile(std::ifstream& file);
-    static std::pair<int, std::vector<int>> parseQuery(std::string query, std::vector<std::string> names);
+    static std::pair<int, std::vector<int>> parseQuery(std::string query,
+        std::vector<std::string> names);
 };
 
 #endif

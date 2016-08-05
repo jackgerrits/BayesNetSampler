@@ -25,7 +25,9 @@ public:
     double getProbability(std::vector<int> evidence);
 };
 
-std::pair<double, double> likelihoodSampling(std::pair<int, std::vector<int>> query, std::vector<BayesNode> network, int numSamples);
-std::pair<double, double> rejectionSampling(std::pair<int, std::vector<int>> query, std::vector<BayesNode> network, int numSamples);
+std::pair<double, double> likelihoodSampling(std::pair<int, std::vector<int>> query,
+    std::vector<BayesNode> network, int numSamples);
+std::pair<double, double> rejectionSampling(std::pair<int, std::vector<int>> query,
+    std::vector<BayesNode> network, int numSamples);
 
 #endif

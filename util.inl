@@ -20,7 +20,8 @@ template <typename S, typename T>
 std::vector<S> vectorMap(const std::vector<T>& container, const std::function <S (T)>& func) {
     // Create a new vector of the return type.
     std::vector<S> resultVector;
-    // Iterate over each element in the provided vector and push the result of of using the given func onto the result vector.
+    // Iterate over each element in the provided vector and push the result of
+    // using the given func onto the result vector.
     for (T element : container) {
         resultVector.push_back(func(element));
     }
