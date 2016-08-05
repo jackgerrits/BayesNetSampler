@@ -3,7 +3,13 @@
 #include <ctime>
 #include <fstream>
 
+// Requires googletest to be installed for these headers.
+// Can be installed by cloning https://github.com/google/googletest
+// cmake .
+// make
+// make install
 #include "gtest/gtest.h"
+
 #include "BayesNode.h"
 #include "Parser.h"
 

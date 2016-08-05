@@ -14,7 +14,7 @@ To run the included unit and integration tests contained in `test.cpp` :
 make test
 ```
 
-Note that several tests are non-deterministic given the nature of this assignment, however they have been given a large enough range and number of samples such that if it is working correctly it will pass.
+Note that several integration tests are non-deterministic given the nature of this assignment, however they have been given a large enough range and number of samples such that if it is working correctly it will pass.
 
 ## Run
 
