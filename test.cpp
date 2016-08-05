@@ -107,7 +107,8 @@ TEST(NodeTests, NodeQueryNegativeTests) {
 }
 
 TEST(NodeTests, ParseQueryTest) {
-    std::vector<std::string> names = {"Burglar", "Earthquake", "Alarm", "John", "Mary"};
+    // Names are converted to lower case in the network definition parsing stage.
+    std::vector<std::string> names = {"burglar", "earthquake", "alarm", "john", "mary"};
     std::string query ="P(Burglar | John=true, Mary=true)";
 
     auto result = Parser::parseQuery(query, names);

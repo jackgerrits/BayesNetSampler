@@ -1,7 +1,7 @@
 #include "Parser.h"
 
 // Searches for the given element in the given container.
-// Returns the index of the element or -1 if not found.
+// Returns the index of the element or -1 if not found.s
 template <typename T>
 int findIndex(std::vector<T> container, T searchElem){
     auto findIterator = find(container.begin(), container.end(), searchElem);
@@ -20,6 +20,7 @@ std::vector<BayesNode> Parser::parseNetworkFile(std::ifstream& file){
     for(int i = 0; i < numNodes; i++){
         std::string currentName;
         file >> currentName;
+        std::transform(currentName.begin(), currentName.end(), currentName.begin(), ::tolower);
         names.push_back(currentName);
     }
 
@@ -67,37 +68,51 @@ std::vector<BayesNode> Parser::parseNetworkFile(std::ifstream& file){
 }
 
 std::pair<int, std::vector<int> > Parser::parseQuery(std::string query, std::vector<std::string> names) {
-    // This regex extracts the query parameters and then each evidence pair as subgroups.
-    std::regex rgx("(?:P\\()?(?:(\\w+)(?:\\s*\\=?\\s*)?(\\w+)?)+", std::regex::ECMAScript);
+    // This regex simply matches words and these are interpretted in the intended sequence.
+    std::regex rgx("\\w+", std::regex::ECMAScript);
     std::smatch result;
 
-    // Initialise default observations with values of zero
+    // Initialise default observations with values of zero.
     std::vector<int> observations(names.size(), 0);
 
-    // Initial regex_search for the query variable.
+    // Extract P out of query.
     std::regex_search(query, result, rgx);
-    // The regex returns the entire match and then the group afterwards, so the first element is ignored.
-    int queryIndex = findIndex(names, std::string(result[1]));
+    query = result.suffix().str();
+
+    // Extract query variable.
+    std::regex_search(query, result, rgx);
+    std::string queryName = result[0];
+    std::transform(queryName.begin(), queryName.end(), queryName.begin(), ::tolower);
+    int queryIndex = findIndex(names, queryName);
     if(queryIndex == -1){
-        std::cerr << result[1] << " was not found in the network defintion. Check spelling or capitalisation." << std::endl;
+        std::cerr << queryName << " was not found in the network defintion, perhaps check spelling." << std::endl;
         exit(1);
     }
 
     query = result.suffix().str();
 
-    // Iterate over each of the successive evidence pair matches adding them onto the observation vector.
-    while (std::regex_search (query,result,rgx)) {
-        // Determines the index of the given random variable name in the node list
-        int index = findIndex(names, std::string(result[1]));
+    // Keep searching while there are still evidence pairs.
+    while(std::regex_search(query, result, rgx)){
+        // Extract evidence variable name.
+        std::string currentName = result[0];
+        std::transform(currentName.begin(), currentName.end(), currentName.begin(), ::tolower);
+        int index = findIndex(names, currentName);
         if(index == -1){
-            std::cerr << result[1] << " was not found in the network defintion. Check spelling or capitalisation." << std::endl;
+            std::cerr << currentName << " was not found in the network defintion, perhaps check spelling." << std::endl;
             exit(1);
         }
-        // Extract the boolean from the subgroup, transform to lower case just in case and then convert into a negative or positive observation.
-        std::string boolStr = result[2];
-        std::transform(boolStr.begin(), boolStr.end(), boolStr.begin(), ::tolower);
-        observations[index] = boolStr == "true" ? 1 : -1;
         query = result.suffix().str();
+
+        // Attempt to extract the boolean, transform to lower case just in case and then convert into a negative or positive observation.
+        if(std::regex_search(query, result, rgx)){
+            std::string boolStr = result[0];
+            std::transform(boolStr.begin(), boolStr.end(), boolStr.begin(), ::tolower);
+            observations[index] = boolStr == "true" ? 1 : -1;
+            query = result.suffix().str();
+        } else {
+            std::cerr << "Missing boolean value of evidence variable or query is malformed." << std::endl;
+            exit(1);
+        }
     }
 
     return std::make_pair(queryIndex, observations);
