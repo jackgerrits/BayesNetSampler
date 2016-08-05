@@ -76,7 +76,10 @@ std::pair<int, std::vector<int> > Parser::parseQuery(std::string query, std::vec
     std::vector<int> observations(names.size(), 0);
 
     // Extract P out of query.
-    std::regex_search(query, result, rgx);
+    if(!std::regex_search(query, result, rgx)){
+        std::cerr << "Error there was no query given." << std::endl;
+        exit(1);
+    }
     query = result.suffix().str();
 
     // Extract query variable.
